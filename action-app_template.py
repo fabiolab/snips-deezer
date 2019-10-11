@@ -61,10 +61,23 @@ class Template(object):
             intent_message.site_id, "Action 2", ""
         )
 
-    # register callback function to its intent and start listen to MQTT bus
+    # # register callback function to its intent and start listen to MQTT bus
+    # def start_blocking(self):
+    #     with Hermes(MQTT_ADDR) as h:
+    #         h.subscribe_intent("fabio35:playSong", self.intent_1_callback).loop_forever()
+
+    def master_intent_callback(self, hermes, intent_message):
+        print(f"[Received] intent {intent_message.intent.intent_name}")
+        coming_intent = intent_message.intent.intent_name
+        if coming_intent == 'fabio35:playSong':
+            self.intent_1_callback(hermes, intent_message)
+
+        # more callback and if condition goes here...
+
+    # --> Register callback function and start MQTT
     def start_blocking(self):
         with Hermes(MQTT_ADDR) as h:
-            h.subscribe_intent("fabio35:playSong", self.intent_1_callback).loop_forever()
+            h.subscribe_intents(self.master_intent_callback).start()
 
 
 if __name__ == "__main__":
