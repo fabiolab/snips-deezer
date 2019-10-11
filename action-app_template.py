@@ -43,7 +43,7 @@ class Template(object):
 
         # if need to speak the execution result by tts
         hermes.publish_start_session_notification(
-            intent_message.site_id, "Action 1", ""
+            intent_message.site_id, "playSong", ""
         )
 
     @staticmethod
@@ -64,9 +64,7 @@ class Template(object):
     # register callback function to its intent and start listen to MQTT bus
     def start_blocking(self):
         with Hermes(MQTT_ADDR) as h:
-            h.subscribe_intent("intent_1", self.intent_1_callback).subscribe_intent(
-                "intent_2", self.intent_2_callback
-            ).loop_forever()
+            h.subscribe_intent("playSong", self.intent_1_callback).loop_forever()
 
 
 if __name__ == "__main__":
