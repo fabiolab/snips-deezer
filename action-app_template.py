@@ -1,5 +1,4 @@
-##  /usr/bin/env python3
-#!venv/bin/python3
+#!/usr/bin/env python3
 
 from snipsTools import SnipsConfigParser
 from hermes_python.hermes import Hermes
@@ -13,9 +12,9 @@ CONFIG_INI = "config.ini"
 # please get this mqtt connection info from <config.ini>
 #
 # hint: MQTT server is always running on the master device
-MQTT_IP_ADDR: str = "localhost"
-MQTT_PORT: int = 1883
-MQTT_ADDR: str = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
+MQTT_IP_ADDR = "localhost"
+MQTT_PORT = 1883
+MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
 
 
 class Template(object):
@@ -68,7 +67,7 @@ class Template(object):
     #         h.subscribe_intent("fabio35:playSong", self.intent_1_callback).loop_forever()
 
     def master_intent_callback(self, hermes, intent_message):
-        print(f"[Received] intent {intent_message.intent.intent_name}")
+        print("[Received] intent {}".format(intent_message.intent.intent_name))
         coming_intent = intent_message.intent.intent_name
         if coming_intent == 'fabio35:playSong':
             self.intent_1_callback(hermes, intent_message)
