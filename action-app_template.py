@@ -12,9 +12,9 @@ CONFIG_INI = "config.ini"
 # please get this mqtt connection info from <config.ini>
 #
 # hint: MQTT server is always running on the master device
-MQTT_IP_ADDR = "localhost"
-MQTT_PORT = 1883
-MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
+MQTT_IP_ADDR: str = "localhost"
+MQTT_PORT: int = 1883
+MQTT_ADDR: str = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
 
 
 class Template(object):
