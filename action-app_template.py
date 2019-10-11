@@ -64,7 +64,7 @@ class Template(object):
     # register callback function to its intent and start listen to MQTT bus
     def start_blocking(self):
         with Hermes(MQTT_ADDR) as h:
-            h.subscribe_intent("playSong", self.intent_1_callback).loop_forever()
+            h.subscribe_intent("fabio35:playSong", self.intent_1_callback).loop_forever()
 
 
 if __name__ == "__main__":
