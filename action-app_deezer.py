@@ -75,7 +75,7 @@ class DeezerApp(object):
 
         try:
             parameters = {"q": "obladioblada"}
-            logger.info("Calling {} for getting parking state".format(url))
+            print("Calling {} for getting parking state".format(url))
             response = requests.get(url, params=parameters)
             if response.status_code >= 400:
                 e = Exception(
@@ -83,17 +83,17 @@ class DeezerApp(object):
                         url, response.status_code, response.text
                     )
                 )
-                logger.error(e)
+                print(e)
                 return "je n'ai pas trouvé de chanson portant ce titre"
             response_json = response.json()
             return DeezerApp.parse_response(response_json)
         except Exception as e:
-            logger.error(e)
+            print(e)
             return "je n'ai pas trouvé de chanson portant ce titre"
 
     @staticmethod
     def parse_response(response: dict) -> str:
-        logger.debug("Parsing response ...")
+        print("Parsing response ...")
         if not response or not response.get("data", None):
             return "je n'ai pas trouvé de chanson portant ce titre"
 
