@@ -8,7 +8,7 @@ This is a template helping you build the first Snips Voice App quickly.
 
 > This template is modified from [an origin python template](https://github.com/snipsco/snips-actions-templates) but using a riche action code structure. The origin template is made for connecting to snippets, you can use it to build action for a single intent easily. However, if you already know how snips action code works with bundles, feel free to choice the one you you like best!
 
-## Template Organisation
+## DeezerApp Organisation
 
 Files listed below are required as a minimum construction, which ensures that this action code can be managed by `snips-skill-server`. But it does not mean you should only have these files.
 With a simple action, it can be written in the `action-app_example.py` file. However with some more complicated action code, it's better to have a specific class file for it.
@@ -50,7 +50,7 @@ MQTT_PORT: int = 1883
 MQTT_ADDR: str = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
 
 
-class Template(object):
+class DeezerApp(object):
     """class used to wrap action code with mqtt connection
        please change the name refering to your application
     """
@@ -66,7 +66,7 @@ class Template(object):
         self.start_blocking()
 
     @staticmethod
-    def intent_1_callback(self,
+    def play_track(self,
                           hermes: Hermes,
                           intent_message: IntentMessage):
 
@@ -103,23 +103,23 @@ class Template(object):
     # register callback function to its intent and start listen to MQTT bus
     def start_blocking(self):
         with Hermes(MQTT_ADDR) as h:
-            h.subscribe_intent('intent_1', self.intent_1_callback)
+            h.subscribe_intent('intent_1', self.play_track)
             .subscribe_intent('intent_2', self.intent_2_callback)
             # more intents and callbacks go here...
             .loop_forever()
 
 
 if __name__ == "__main__":
-    Template()
+    DeezerApp()
 ```
 
 Note: because we can now use type check, and IDE can use that to give better completion, we import necessary definition and add types in methods.
 
 The beginning is similar to most Python codes, it imports all the necessary dependencies / modules. It also defines the config file name (Usually set to `config.ini` and put this file as the same directory with this code file) and MQTT connection info. If the App you are making is supposed to run on a satellite or some other devices, we recommend that the MQTT connection info should be loaded from the external `config.ini` file instead of fixing it in the code.
 
-The main part of this code is composed of one class - `Template`, which is used to bind App related action code with MQTT bus. This class should be named corresponding to the App.
+The main part of this code is composed of one class - `DeezerApp`, which is used to bind App related action code with MQTT bus. This class should be named corresponding to the App.
 
-The code is mainly composed by different intent callback functions such as `intent_1_callback`, `inent_2_callback`. Inside each callback function is the place to write the intent related action code.
+The code is mainly composed by different intent callback functions such as `play_track`, `inent_2_callback`. Inside each callback function is the place to write the intent related action code.
 
 > For the intent callback function, it's better to terminate the session first if there is no need to continue. This can prevent other snips components (Like dialog-manager, hotword..) from being blocked by the action code.
 

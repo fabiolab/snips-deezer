@@ -5,6 +5,9 @@ from hermes_python.hermes import Hermes
 
 # imported to get type check and IDE completion
 from hermes_python.ontology.dialogue.intent import IntentMessage
+import requests
+from urllib.parse import urljoin
+from loguru import logger
 
 CONFIG_INI = "config.ini"
 
@@ -16,8 +19,11 @@ MQTT_IP_ADDR = "localhost"
 MQTT_PORT = 1883
 MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
 
+DEEZER_BASE_URL = "https://api.deezer.com"
+DEEZER_SEARCH_ENDPOINT = "/search"
 
-class Template(object):
+
+class DeezerApp(object):
     """class used to wrap action code with mqtt connection
        please change the name refering to your application
     """
@@ -33,7 +39,7 @@ class Template(object):
         self.start_blocking()
 
     @staticmethod
-    def intent_1_callback(hermes: Hermes, intent_message: IntentMessage):
+    def play_track(hermes: Hermes, intent_message: IntentMessage):
 
         # terminate the session first if not continue
         hermes.publish_end_session(intent_message.session_id, "")
@@ -46,31 +52,11 @@ class Template(object):
             intent_message.site_id, "playSong", ""
         )
 
-    @staticmethod
-    def intent_2_callback(hermes: Hermes, intent_message: IntentMessage):
-
-        # terminate the session first if not continue
-        hermes.publish_end_session()
-        hermes.publish_end_session(intent_message.session_id, "")
-
-        # action code goes here...
-        print("[Received] intent: {}".format(intent_message.intent.intent_name))
-
-        # if need to speak the execution result by tts
-        hermes.publish_start_session_notification(
-            intent_message.site_id, "Action 2", ""
-        )
-
-    # # register callback function to its intent and start listen to MQTT bus
-    # def start_blocking(self):
-    #     with Hermes(MQTT_ADDR) as h:
-    #         h.subscribe_intent("fabio35:playSong", self.intent_1_callback).loop_forever()
-
     def master_intent_callback(self, hermes, intent_message):
         print("[Received] intent {}".format(intent_message.intent.intent_name))
         coming_intent = intent_message.intent.intent_name
-        if coming_intent == 'fabio35:playSong':
-            self.intent_1_callback(hermes, intent_message)
+        if coming_intent == "fabio35:playSong":
+            self.play_track(hermes, intent_message)
 
         # more callback and if condition goes here...
 
@@ -79,6 +65,34 @@ class Template(object):
         with Hermes(MQTT_ADDR) as h:
             h.subscribe_intents(self.master_intent_callback).start()
 
+    def get_deezer_id(self) -> str:
+        url = urljoin(self.base_url, self.end_point)
+
+        try:
+            parameters = {"q": "obladioblada"}
+            logger.info("Calling {} for getting parking state".format(url))
+            response = requests.get(url, params=parameters)
+            if response.status_code >= 400:
+                e = Exception(
+                    "HTTP Error calling {} => {} : {}".format(
+                        url, response.status_code, response.text
+                    )
+                )
+                logger.error(e)
+                raise e
+            response_json = response.json()
+            return self.parse_response(response_json)
+        except Exception as e:
+            logger.error(e)
+            raise e
+
+    @staticmethod
+    def parse_response(response: dict) -> str:
+        results = "757807"
+
+        logger.debug("Parsing response ...")
+        return results
+
 
 if __name__ == "__main__":
-    Template()
+    DeezerApp()
