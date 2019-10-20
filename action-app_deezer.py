@@ -29,7 +29,6 @@ class DeezerApp(object):
     """
 
     def __init__(self):
-        logger.add("file.log")
         # get the configuration if needed
         try:
             self.config = SnipsConfigParser.read_configuration_file(CONFIG_INI)
@@ -52,7 +51,7 @@ class DeezerApp(object):
 
         # if need to speak the execution result by tts
         hermes.publish_start_session_notification(
-            intent_message.site_id, track_id, ""
+            intent_message.site_id, str(track_id), ""
         )
 
     def master_intent_callback(self, hermes, intent_message):
