@@ -46,10 +46,14 @@ class DeezerApp(object):
 
         # action code goes here...
         print("[Received] intent: {}".format(intent_message.intent.intent_name))
+        for slot in intent_message.slots:
+            print(slot)
+
+        track_id = DeezerApp.get_deezer_id()
 
         # if need to speak the execution result by tts
         hermes.publish_start_session_notification(
-            intent_message.site_id, "playSong", ""
+            intent_message.site_id, track_id, ""
         )
 
     def master_intent_callback(self, hermes, intent_message):
@@ -65,8 +69,9 @@ class DeezerApp(object):
         with Hermes(MQTT_ADDR) as h:
             h.subscribe_intents(self.master_intent_callback).start()
 
-    def get_deezer_id(self) -> str:
-        url = urljoin(self.base_url, self.end_point)
+    @staticmethod
+    def get_deezer_id() -> str:
+        url = urljoin(DEEZER_BASE_URL, DEEZER_SEARCH_ENDPOINT)
 
         try:
             parameters = {"q": "obladioblada"}
@@ -79,18 +84,17 @@ class DeezerApp(object):
                     )
                 )
                 logger.error(e)
-                raise e
+                return "je n'ai pas trouvé de chanson portant ce titre"
             response_json = response.json()
-            return self.parse_response(response_json)
+            return DeezerApp.parse_response(response_json)
         except Exception as e:
             logger.error(e)
-            raise e
+            return "je n'ai pas trouvé de chanson portant ce titre"
 
     @staticmethod
     def parse_response(response: dict) -> str:
-        results = "757807"
-
         logger.debug("Parsing response ...")
+        results = "757807"
         return results
 
 
