@@ -95,7 +95,10 @@ class DeezerApp(object):
         if not response or not response.get("data", None):
             return "je n'ai pas trouvé de chanson portant ce titre"
 
-        results = response["data"][0].get("id", "pas d'identifiant")
+        try:
+            results = response["data"][0].get("id", "pas d'identifiant")
+        except Exception as e:
+            return "arg"
         return results
 
 
