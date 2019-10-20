@@ -29,6 +29,7 @@ class DeezerApp(object):
     """
 
     def __init__(self):
+        logger.add("file.log")
         # get the configuration if needed
         try:
             self.config = SnipsConfigParser.read_configuration_file(CONFIG_INI)
