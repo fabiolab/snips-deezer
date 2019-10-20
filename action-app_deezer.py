@@ -47,7 +47,11 @@ class DeezerApp(object):
         # action code goes here...
         print("[Received] intent: {}".format(intent_message.intent.intent_name))
 
-        track_id = DeezerApp.get_deezer_id()
+        searched_track = "obladi oblada"
+        if intent_message.slots:
+            searched_track = intent_message.slots[0]
+
+        track_id = DeezerApp.get_deezer_id(searched_track)
 
         # if need to speak the execution result by tts
         hermes.publish_start_session_notification(
@@ -68,11 +72,11 @@ class DeezerApp(object):
             h.subscribe_intents(self.master_intent_callback).start()
 
     @staticmethod
-    def get_deezer_id() -> str:
+    def get_deezer_id(searched_track) -> str:
         url = urljoin(DEEZER_BASE_URL, DEEZER_SEARCH_ENDPOINT)
 
         try:
-            parameters = {"q": "obladioblada"}
+            parameters = {"q": searched_track}
             print("Calling {} for getting parking state".format(url))
             response = requests.get(url, params=parameters)
             if response.status_code >= 400:
