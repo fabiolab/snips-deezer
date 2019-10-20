@@ -51,7 +51,7 @@ class DeezerApp(object):
 
         # if need to speak the execution result by tts
         hermes.publish_start_session_notification(
-            intent_message.site_id, track_id, ""
+            intent_message.site_id, "test", ""
         )
 
     def master_intent_callback(self, hermes, intent_message):
