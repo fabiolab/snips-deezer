@@ -45,7 +45,8 @@ class DeezerApp(object):
         hermes.publish_end_session(intent_message.session_id, "")
 
         # action code goes here...
-        print("[Received] intent: {}".format(intent_message.intent.intent_name))
+        logger.info("[Received] intent: {}".format(intent_message.intent.intent_name))
+        logger.info("[Received] slots: {}".format(intent_message.slots))
 
         searched_track = intent_message.slots.get("musicTrack", "obladi oblada")
 
@@ -57,7 +58,7 @@ class DeezerApp(object):
         )
 
     def master_intent_callback(self, hermes, intent_message):
-        print("[Received] intent {}".format(intent_message.intent.intent_name))
+        logger.info("[Received] intent {}".format(intent_message.intent.intent_name))
         coming_intent = intent_message.intent.intent_name
         if coming_intent == "fabio35:playSong":
             self.play_track(hermes, intent_message)
@@ -75,7 +76,7 @@ class DeezerApp(object):
 
         try:
             parameters = {"q": searched_track}
-            print("Calling {} for getting parking state".format(url))
+            logger.info("Calling {} for getting parking state".format(url))
             response = requests.get(url, params=parameters)
             if response.status_code >= 400:
                 e = Exception(
@@ -83,17 +84,17 @@ class DeezerApp(object):
                         url, response.status_code, response.text
                     )
                 )
-                print(e)
+                logger.info(e)
                 return "je n'ai pas trouvé de chanson portant ce titre"
             response_json = response.json()
             return DeezerApp.parse_response(response_json)
         except Exception as e:
-            print(e)
+            logger.info(e)
             return "je n'ai pas trouvé de chanson portant ce titre"
 
     @staticmethod
     def parse_response(response: dict) -> str:
-        print("Parsing response ...")
+        logger.info("Parsing response ...")
         if not response or not response.get("data", None):
             return "je n'ai pas trouvé de chanson portant ce titre"
 
