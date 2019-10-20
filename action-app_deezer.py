@@ -94,7 +94,10 @@ class DeezerApp(object):
     @staticmethod
     def parse_response(response: dict) -> str:
         logger.debug("Parsing response ...")
-        results = "757807"
+        if not response or not response.get("data", None):
+            return "je n'ai pas trouvé de chanson portant ce titre"
+
+        results = response["data"][0].get("id", "pas d'identifiant")
         return results
 
 
