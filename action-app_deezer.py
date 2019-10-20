@@ -47,9 +47,7 @@ class DeezerApp(object):
         # action code goes here...
         print("[Received] intent: {}".format(intent_message.intent.intent_name))
 
-        searched_track = "obladi oblada"
-        if intent_message.slots:
-            searched_track = intent_message.slots[0]
+        searched_track = intent_message.slots.get("musicTrack", "obladi oblada")
 
         track_id = DeezerApp.get_deezer_id(searched_track)
 
