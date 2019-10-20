@@ -46,7 +46,7 @@ class DeezerApp(object):
 
         # action code goes here...
         logger.info("[Received] intent: {}".format(intent_message.intent.intent_name))
-        logger.info("[Received] slots: {}".format(intent_message.slots))
+        logger.info("[Received] slots: {} / {}".format(intent_message.slots.keys(), intent_message.slots.values()))
 
         searched_track = intent_message.slots.get("musicTrack", "obladi oblada")
 
@@ -76,7 +76,7 @@ class DeezerApp(object):
 
         try:
             parameters = {"q": searched_track}
-            logger.info("Calling {} for getting parking state".format(url))
+            logger.info("Calling {} for getting track id {}".format(url, searched_track))
             response = requests.get(url, params=parameters)
             if response.status_code >= 400:
                 e = Exception(
