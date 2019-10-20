@@ -46,8 +46,6 @@ class DeezerApp(object):
 
         # action code goes here...
         print("[Received] intent: {}".format(intent_message.intent.intent_name))
-        for slot in intent_message.slots:
-            print(slot)
 
         track_id = DeezerApp.get_deezer_id()
 
