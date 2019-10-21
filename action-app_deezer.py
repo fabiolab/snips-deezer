@@ -8,6 +8,7 @@ from hermes_python.ontology.dialogue.intent import IntentMessage
 import requests
 from urllib.parse import urljoin
 from loguru import logger
+import vlc
 
 CONFIG_INI = "config.ini"
 
@@ -53,6 +54,8 @@ class DeezerApp(object):
             searched_track = intent_message.slots.musicTrack.first().value
 
         track_id = DeezerApp.get_deezer_id(searched_track)
+        p = vlc.MediaPlayer(track_id)
+        p.play()
 
         # if need to speak the execution result by tts
         hermes.publish_start_session_notification(
@@ -101,7 +104,7 @@ class DeezerApp(object):
             return "je n'ai pas trouvé de chanson portant ce titre"
 
         try:
-            results = response["data"][0].get("id", "pas d'identifiant")
+            results = response["data"][0].get("preview", "pas d'identifiant")
         except Exception as e:
             return "arg"
         return results
